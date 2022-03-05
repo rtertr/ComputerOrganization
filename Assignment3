@@ -1,0 +1,66 @@
+.global main                                    
+
+formatstr: .asciz "%ld"                         
+mynumberoutput: .asciz "The result is: %ld \n"  
+inputprompt1: .asciz "Please enter an integer base: " 
+inputprompt2: .asciz "Please enter an integer exponent: "
+
+
+.global main
+main: 
+    pushq   %rbp                               
+    movq    %rsp, %rbp   
+    subq    $16, %rsp
+
+    movq    $inputprompt1, %r15
+    call    input
+    movq    %rdx, %r12
+
+    movq   $inputprompt2, %r15
+    call    input     
+    movq    %rdx, %r13
+
+    call    pow
+
+input: 
+    pushq   %rbp                                
+    movq    %rsp, %rbp  
+
+    movq    $1, %r14
+
+    movq    $0, %rax            
+    movq    %r15, %rdi    
+    call    printf 
+
+    subq    $16, %rsp                           
+    leaq    -8(%rbp), %rsi                     
+    movq    $formatstr, %rdi                   
+    movq    $0, %rax                           
+    call    scanf
+    movq    -8(%rbp), %rdx
+    movq    %rbp, %rsp                        
+    popq    %rbp 
+    ret
+
+pow:
+    pushq   %rbp                               
+    movq    %rsp, %rbp
+
+    cmpq    $0, %r13 
+    jle     powend
+    imulq   %r12, %r14
+    decq    %r13
+    jmp pow
+    
+    call    powend
+
+powend:
+    movq    $0, %rax            
+    movq    $mynumberoutput, %rdi
+    movq    %r14, %rsi    
+    call    printf           
+    call    end
+
+end:
+    mov     $0,  %rdi           # first argument of exit, sets the exit code to 0
+    call    exit                # calls exit
