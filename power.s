@@ -21,7 +21,7 @@ main:
     call    input                       # call the method input for the imput prompt 
     movq    %rdx, %r13                  # put the result into r13
 
-    call   pow                          # callmultiply
+    call   pow                          # call pow
 
 input: 
     pushq   %rbp                        # beggining 
