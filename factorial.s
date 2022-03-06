@@ -51,7 +51,7 @@ factorial:
     call    printfactorial              # call the subroutine printfactorial
 
 printfactorial:
-    movq    $0, %rax                   # not needed 
+    movq    $0, %rax                    # might crash without
     movq    $mynumberoutput, %rdi       # prepare for print, printing the string
     movq    %r14, %rsi                  # print the value located at r14
     call    printf                      # call for print
