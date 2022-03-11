@@ -1,0 +1,43 @@
+.global main                                    
+
+formatstr: .asciz "%ld"                         # formats the output number as .asciz
+mynumberoutput: .asciz "The result is: %ld \n"  # formats the result
+inputprompt: .asciz "Please enter a number: \n" # formats the input prompt
+
+.global main
+main: 
+    pushq   %rbp                        # pushes the base pointer over
+    movq    %rsp, %rbp                  # moves the stack pointer to the base pointer
+
+    call    inout                       # call the method input for the imput prompt
+
+    call    end                         # call end
+
+inout:   # this subroutine prints the inputprompt, store the given input, then increase this input and lastly prints the increased input. 
+
+    pushq   %rbp                        # pushes the base pointer over
+    movq    %rsp, %rbp                  # moves the stack pointer to the base pointer
+
+    movq    $inputprompt, %rdi          # prepare for print statement, printing the string (in this case our inputprompt) (first by convention)
+    call    printf                      # call for print
+
+    subq    $16, %rsp                   # make space for input to be stored
+    
+    leaq    -8(%rbp), %rsi              # prepare for scanf, puts rsi into the space above rbp (next by convention)
+    movq    $formatstr, %rdi            # move formatstr into rdi such that it can be stored by user (next by convention)
+    call    scanf                       # calls scanf
+
+    incq    -8(%rbp)                    # we increase the value stored at the space 8 down from the base pointer
+
+ #  movq    $0, %rax                    # first argument of prinft, sets no vector registers for use
+    movq    $mynumberoutput, %rdi       # second argument of printf, loads the value mynumberoutput into rdi 
+    movq    -8(%rbp), %rsi              # third argument of printf, sets the adress of the string (down 8 from the base pointer) in RSI
+    call    printf                      # calls printf
+    
+    movq    %rbp, %rsp                  # moves the base pointer to the base 
+    popq    %rbp                        # pops the value on the top of the stack into rbp
+    ret                                 # return
+
+end:
+    mov     $0,  %rdi                   # first argument of exit, sets the exit code to 0
+    call    exit                        # calls exit
