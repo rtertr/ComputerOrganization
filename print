@@ -1,0 +1,54 @@
+# d e f i n e the s t r i n g and i t s l e n g t h :
+
+ hello: .asciz "1fuckyou! %u \n"    
+ unsigned: .asciz ":) \n"                        
+helloend: .equ length, helloend - hello 
+
+.global main
+main: 
+    pushq   %rbp                        # pushes the base pointer over
+    movq    %rsp, %rbp                  # moves the stack pointer to the base pointer
+
+    movq    $1, %r14                    # move 1 into r14
+
+#    call    printmystring               # call the method input for the imput prompt
+
+    call    readmystring                # call the method input for the imput prompt
+
+    call    end                         # call end
+
+printmystring:   # this subroutine prints the inputprompt, store the given input, then increase this input and lastly prints the increased input. 
+
+    movq     $1, %rax # system call 1 is syswrite
+    movq     $1, %rdi # first argument is where to write ; stdout is 1
+    movq     $unsigned, %rsi # next argument : what to write
+
+    movq     $length, %rdx # last argument : how many bytes to write
+
+    syscall
+
+
+readmystring:
+
+    pushq   %rbp                        # pushes the base pointer over
+    movq    %rsp, %rbp                  # moves the stack pointer to the base pointer
+
+
+    subq    $16, %rsp                   # make space  
+
+    movq     $0, %rax # system call 1 is syswrite
+    movq     $1, %rdi # first argument is where to read ; stdout is 1
+    movq     $hello, %rsi # next argument : what to read
+    movq     $(length-12), %rdx # last argument : how many bytes to read
+    
+    syscall  
+
+    movq    $0, %rax                    # not needed 
+    movq    $hello, %rdi                # prepare for print, printing the string
+    movq    %rax, %rsi                  # print the value located at r14
+    call    printf                      # call for print
+
+
+end:
+    mov     $0,  %rdi                   # first argument of exit, sets the exit code to 0
+    call    exit                        # calls exit
